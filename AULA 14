@@ -1,0 +1,120 @@
+> setwd(c:/ECONOMETRIA)
+Error: unexpected '/' in "setwd(c:/"
+> setwd("c:/ECONOMETRIA")
+> getwd()
+[1] "c:/ECONOMETRIA"
+> library(readxl)
+> CRIP <- read_excel("C:/ECONOMETRIA/CRIP.xlsx")
+> View(CRIP)
+> install.packages("urca")
+Installing package into 'C:/Users/burre/OneDrive/Documentos/R/win-library/3.5'
+(as 'lib' is unspecified)
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.5/urca_1.3-0.zip'
+Content type 'application/zip' length 1060263 bytes (1.0 MB)
+downloaded 1.0 MB
+
+package 'urca' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\burre\AppData\Local\Temp\RtmpEbkQ67\downloaded_packages
+> library("urca")
+> library(readxl)
+> install.packages("strucchange")
+Installing package into 'C:/Users/burre/OneDrive/Documentos/R/win-library/3.5'
+(as 'lib' is unspecified)
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.5/strucchange_1.5-1.zip'
+Content type 'application/zip' length 951304 bytes (929 KB)
+downloaded 929 KB
+
+package 'strucchange' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\burre\AppData\Local\Temp\RtmpEbkQ67\downloaded_packages
+> library(strucchange)
+Carregando pacotes exigidos: zoo
+
+Attaching package: 'zoo'
+
+The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric
+
+Carregando pacotes exigidos: sandwich
+> TETHER <- read_excel("c:/ECONOMETRIA/CRIP.xlsx")
+> View(TETHER)
+> TETHER <- ts(TETHER$Close, start = 2015, frequency = 365)
+> plot(TETHER)
+> chow <- Fstats(TETHER~1)
+> sctest(chow)
+
+	supF test
+
+data:  chow
+sup.F = 15.137, p-value = 0.002342
+
+> plot(TETHER)
+> lines(breakpoints(chow))
+> plot(chow)
+> bp_ts <- breakpoints(TETHER~1)
+> bp_ts
+
+	 Optimal 2-segment partition: 
+
+Call:
+breakpoints.formula(formula = TETHER ~ 1)
+
+Breakpoints at observation number:
+519 
+
+Corresponding to breakdates:
+2016(154) 
+> summary(bp_ts)
+
+	 Optimal (m+1)-segment partition: 
+
+Call:
+breakpoints.formula(formula = TETHER ~ 1)
+
+Breakpoints at observation number:
+                            
+m = 1       519             
+m = 2       518 717         
+m = 3   271 518 717         
+m = 4   271 518 717     1131
+m = 5   271 518 717 916 1131
+
+Corresponding to breakdates:
+                                                        
+m = 1             2016(154)                             
+m = 2             2016(153) 2016(352)                   
+m = 3   2015(271) 2016(153) 2016(352)                   
+m = 4   2015(271) 2016(153) 2016(352)           2018(36)
+m = 5   2015(271) 2016(153) 2016(352) 2017(186) 2018(36)
+
+Fit:
+                                                                     
+m   0          1          2          3          4          5         
+RSS     0.5257     0.5198     0.5144     0.5093     0.5090     0.5090
+BIC -6633.0465 -6633.7344 -6633.1755 -6631.9446 -6618.4476 -6604.1343
+> ci_ts <- confint(bp_ts)
+> plot(TETHER)
+> lines(bp_ts)
+> fm0 <- lm(TETHER~1)
+> fm1 <- lm(TETHER~breakpoints(bp_ts,break))
+> fm1 <- lm(TETHER~breakpoints(bp_ts,breaks = 1))
+  tipo inválido (list) para variável 'breakpoints(bp_ts, breaks = 1)'
+> fm1 <- lm(TETHER~breakfactor(bp_ts,breaks = 1))
+> fm1 <- lm(TETHER~breakfactor(bp_ts,breaks = 2))
+> fm1 <- lm(TETHER~breakfactor(bp_ts,breaks = 1))
+> fm2 <- lm(TETHER~breakfactor(bp_ts,breaks = 2))
+> plot(TETHER)
+> lines(ts(fm0), start = 2015, frequency = 365), col = 3)
+> lines(ts(fm0), start = 2015, frequency = 365), col = 3)
+> lines(ts(fitted(fm0), start = 2015, freq=365), col = 3
+> lines(ts(fitted(fm0), start = 2015, freq=365), col = 3)
+> View(fm0)
+> lines(ts(fitted(fm1), start = 2015, freq=365), col = 4)
+> lines(ts(fitted(fm2), start = 2015, freq=365), col = 1)
+> lines(bp_ts)
+> mi01 <- diff(TETHER)
+> plot(mi01)
